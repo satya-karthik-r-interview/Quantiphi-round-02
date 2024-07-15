@@ -1,0 +1,10 @@
+pymilvus
+transformers
+datasets
+torch
+PyPDF2
+accelerate
+bitsandbytes
+streamlit
+fastapi[all]
+nltk

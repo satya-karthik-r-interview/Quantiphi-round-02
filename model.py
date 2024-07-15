@@ -82,8 +82,7 @@ def encode_text(batch):
 
 
 def extract_context(results: List[dict], threshold: float):
-    """ from given list of dictionaries extract the text of each
-    entry if the score is above the threshold
+    """ from given list of dictionaries extract the text of each entry if the score is above the threshold
     """
     results = results[0]
     context = ""
@@ -95,9 +94,7 @@ def extract_context(results: List[dict], threshold: float):
     return context
 
 
-def get_context(milvus_client, collection_name: str,
-                query: str, threshold: float = 0.4, limit=5,
-                output_fields=["text"]):
+def get_context(milvus_client, collection_name: str, query: str, threshold: float = 0.4, limit=5, output_fields=["text"]):
     query = {"text": [query]}
     query_embedding = [v.tolist()
                        for v in encode_text(query)["text_embedding"]]
@@ -139,18 +136,15 @@ def generate_answer(milvus_client, COLLECTION_NAME, user_question) -> str:
     # context = ""
     formatted_input = get_formatted_input(messages, context)
     tokenized_prompt = gen_tokenizer(
-        gen_tokenizer.bos_token + formatted_input,
-        return_tensors="pt").to(gen_model.device)
+        gen_tokenizer.bos_token + formatted_input, return_tensors="pt").to(gen_model.device)
 
     terminators = [
         gen_tokenizer.eos_token_id,
         gen_tokenizer.convert_tokens_to_ids("<|eot_id|>")
     ]
 
-    outputs = gen_model.generate(
-        input_ids=tokenized_prompt.input_ids,
-        attention_mask=tokenized_prompt.attention_mask,
-        max_new_tokens=128, eos_token_id=terminators)
+    outputs = gen_model.generate(input_ids=tokenized_prompt.input_ids,
+                                 attention_mask=tokenized_prompt.attention_mask, max_new_tokens=128, eos_token_id=terminators)
 
     response = outputs[0][tokenized_prompt.input_ids.shape[-1]:]
     answer = gen_tokenizer.decode(response, skip_special_tokens=True)
@@ -192,7 +186,7 @@ rag_dataset = rag_dataset.map(
 rag_data_list = rag_dataset.to_list()
 
 # Connection URI. this will write to a file in the current directory
-MILVUS_URI = "./milvus.db"
+MILVUS_URI = "/asset_data/milvus.db"
 # Collection name
 COLLECTION_NAME = "biology_book"
 # Embedding dimension. depending on model

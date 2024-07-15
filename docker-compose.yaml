@@ -1,0 +1,28 @@
+services:
+  fastapi:
+    container_name: fastapi
+    image: huggingface:0.0.1
+    command: python -m uvicorn model_server:app --port 8000
+    runtime: nvidia
+    working_dir: /app
+    volumes:
+      - ./.data:/asset_data/
+      - ./:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    ports:
+      - "8000:8000"
+  streamlit:
+    container_name: streamlit
+    image: huggingface:0.0.1
+    working_dir: /app
+    volumes:
+      - ./.data:/asset_data/
+      - ./:/app
+    # entrypoint: ["streamlit run /app/app.py --server.port 8051"]
+    command: streamlit run app.py --server.port 8051
+    network_mode: host
